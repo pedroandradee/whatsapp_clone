@@ -1,0 +1,138 @@
+.container{
+    display: flex;
+    height: 100%;
+    flex: 2.35;
+    flex-direction: column;
+    align-items: center;
+}
+
+.top{
+    display: flex;
+    width: 100%;
+    background-color: rgb(53, 53, 53);
+}
+
+.imgContainer{
+    width: 40px;
+    height: 40px;
+    margin: 10px 15px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.friendInfo{
+    display: flex;
+    width: calc(100% - 70px);
+    justify-content: space-between;
+    align-items: center;
+}
+
+.friendData{
+    display: flex;
+    flex-direction: column;
+}
+
+.username{
+    font-weight: 600;
+    color: #dbdbdb;
+}
+
+.lastView{
+    font-size: 13px;
+    color: #a3a3a3;
+}
+
+.icons{
+    display: flex;
+    width: 80px;
+    margin-right: 10px;
+    justify-content: space-evenly;
+    color: #a3a3a3;
+}
+
+.bottom{
+    width: 100%;
+    flex: 1;
+    height: calc(100% - 110px);
+}
+
+.chatWrapper{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.chatTop{
+    height: 100%;
+    overflow-y: scroll;
+    padding: 0px 10px;
+}
+
+.chatTop::-webkit-scrollbar{
+    width: 8px;
+}
+.chatTop::-webkit-scrollbar-track{
+    background-color: inherit;
+}
+.chatTop::-webkit-scrollbar-thumb{
+    background-color: #929292;
+    border-radius: 5px;
+}
+
+.chatBottom{
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(53, 53, 53);
+}
+
+.chatBottomLeft{
+    display: flex;
+    flex: 0.8;
+    align-items: center;
+    color: #a3a3a3;
+    justify-content: space-evenly;
+}
+
+.chatBottomMiddle{
+    display: flex;
+    flex: 6;
+    align-items: center;
+    justify-content: center;
+    color: #a3a3a3;
+}
+
+.chatInput{
+    display: flex;
+    width: 100%;
+    height: 50px;
+    margin: 5px 0px;
+    padding: 15px;
+    justify-content: center;
+    font-size: 16px;
+    border-radius: 30px;
+    resize: none;
+    border: none;
+    color: white;
+    background-color: rgb(90, 90, 90);
+}
+
+.chatInput::placeholder{
+    color: rgb(221, 221, 221);
+}
+
+.chatInput:focus{
+    outline: none;
+}
+
+.chatBottomRight{
+    display: flex;
+    flex: 0.5;
+    align-items: center;
+    justify-content: center;
+    color: #a3a3a3;
+}
