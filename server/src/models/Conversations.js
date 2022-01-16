@@ -3,6 +3,18 @@ const { Model, Sequelize } = require('sequelize');
 class Conversations extends Model{
     static Init(sequelize){
         super.init({
+            is_group: {
+                type: Sequelize.BOOLEAN,
+                allowNull: true,
+            },
+            group_name: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
+            group_image: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
             description: {
                 type: Sequelize.STRING,
                 allowNull: true

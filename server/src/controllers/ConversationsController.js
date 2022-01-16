@@ -1,4 +1,5 @@
 const Conversations = require("../models/Conversations");
+const Participation = require("../models/Participant");
 const sequelize = require("sequelize");
 
 module.exports = {
@@ -37,7 +38,7 @@ module.exports = {
                 include: [
                     {
                         association: 'participants',
-                        attributes: ['id', 'is_admin'],
+                        attributes: ['id', 'is_admin', 'user_id'],
                         include: {
                             association: 'user',
                             attributes: ['id', 'username']
@@ -74,7 +75,7 @@ module.exports = {
     //read all(id do params é o id do usuário)
     async indexAll(req, res){
         try{
-            /*const conversations = await Conversations.findAll({
+            const conversations = await Conversations.findAll({
                 include: [
                     {
                         association: 'participants',
@@ -94,45 +95,53 @@ module.exports = {
                     }
                 ],
                 attributes: ['id', 'description', 'own_id']
-            })*/
-
-            const search = await Conversations.findAll({
-                attributes: ['id'],
-                include: {
-                    association: 'participants',
-                    where: { user_id: req.params.id },
-                    attributes: []
-                }
-            });
-            let values = [];
-            search.map(s=>(values.push(s.id)));
-            const conversations = await Conversations.findAll({
-                attributes: ['id', 'description', 'own_id'],
-                where: { id : values},
-                include: [
-                    {
-                        association: 'participants',
-                        attributes: ['id', 'is_admin', 'user_id'],
-                        include: {
-                            association: 'user',
-                            attributes: ['username', 'profile_picture']
-                        }
-                    },{
-                        association: 'messages',
-                        attributes: ['id', 'text', 'own_id', 'created_at'],
-                        include: {
-                            association: 'own',
-                            attributes: ['id', 'is_admin', 'user_id'],
-                            
-                        }
-                    }
-                ],
             })
             if(conversations){
                 return res.status(200).json(conversations)
             }
             return res.status(200).json({
                 Status: "Nenhuma mensagem encontrada!"
+            })
+        } catch(err){
+            return res.status(200).json({
+                Status: "Erro interno, " + err
+            })
+        }
+    },
+    async indexAll2(req, res){
+        try{
+            const conversations = await Participation.findAll({
+                where: {
+                    user_id: req.params.id
+                },
+                include: [
+                    {
+                        association: 'chat',
+                        include:[
+                            {
+                                association: 'participants',
+                                attributes: ['id', 'user_id', 'conversation_id', 'is_admin'],
+                                include: {
+                                    association: 'user',
+                                    attributes: ['id', 'username']
+                                }
+                            },
+                            {
+                                association: 'messages',
+                                attributes: ['id', 'own_id', 'text', 'created_at'],
+                                order: ['id', 'DESC']
+                            }
+                        ],
+                        attributes: ['id', 'own_id', 'is_group', 'group_name', 'description', 'group_image']
+                    }
+                ],
+                attributes: []
+            });
+            if(conversations?.length > 0){
+                return res.status(200).json(conversations);
+            }
+            return res.status(200).json({
+                Status: "Nenhuma conversa encontrada!"
             })
         } catch(err){
             return res.status(200).json({

@@ -1,0 +1,137 @@
+.container{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+}
+
+.container2{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+/**/
+.barContainer{
+    display: flex;
+    width: 90%;
+    height: 35px;
+    margin: 5px 0px;
+    border-radius: 30px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(56, 56, 56);
+}
+
+.icons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon{
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    color: #a3a3a3;
+}
+
+.input{
+    width: calc(100% - 40px);
+    height: 80%;
+    padding: 10px;
+    background-color: inherit;
+    border: none;
+    color: rgb(133, 133, 133);
+}
+
+.input:focus{
+    outline: none;
+}
+/**/
+
+.wrapper{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.wrapper::-webkit-scrollbar{
+    width: 8px;
+}
+.wrapper::-webkit-scrollbar-track{
+    background-color: inherit;
+}
+.wrapper::-webkit-scrollbar-thumb{
+    background-color: #929292;
+    border-radius: 5px;
+}
+
+.message{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.messageContainer{
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.img{
+    width: 50px;
+    height: 50px;
+    margin: 10px 15px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.datas{
+    display: flex;
+    width: calc(100% - 90px);
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    height: 80%;
+}
+
+.username{
+    font-size: 18px;
+    color: #8b8b8b;
+}
+
+.userMessage{
+    display: block;
+    width: 240px;
+    height: 20px;
+    font-size: 16px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #8b8b8b;
+}
+
+.release{
+    height: 70%;
+}
+
+.relData{
+    font-size: 12px;
+    color: #8b8b8b;
+}
+
+.hr{
+    width: 80%;
+    border-bottom: 1px solid #8b8b8b;
+}

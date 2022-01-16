@@ -8,6 +8,10 @@ class User extends Model{
                 allowNull: false,
                 defaultValue: "name",
             },
+            description: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
             email: {
                 type: Sequelize.STRING,
                 allowNull: false,

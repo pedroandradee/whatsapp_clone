@@ -1,0 +1,54 @@
+.message{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.messageContainer{
+    background-color: #353535;
+}
+
+.messageContainerOwn{
+    background-color: #17634c;
+    align-content: flex-end;
+    max-width: 300px;
+}
+
+.messageContainer, .messageContainerOwn{
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.messageTop{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.usernameOwn{
+    color: lightskyblue;
+}
+
+.username{
+    color: greenyellow;
+}
+
+.messageText{
+    min-width: 20px;
+    margin-top: 0;
+    color: white;
+}
+
+.messageBottom{
+    display: flex;
+    font-size: 12px;
+    justify-content: flex-end;
+    color: #a3a3a3;
+}
+
+.messageOwn{
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}

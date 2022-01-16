@@ -20,7 +20,7 @@ module.exports = {
         own_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'users', key: 'id' },
+          references: { model: 'participants', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
         },

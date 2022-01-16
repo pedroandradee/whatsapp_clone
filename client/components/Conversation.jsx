@@ -11,10 +11,8 @@ const Conversation = ({conversation, user}) => {
 
     const scrollRef = useRef();
     const [newMessage, setNewMessage] = useState("");
-    const [participants, setParticipants] = useState("");
     const socket = useRef();
     const [chat, setChat] = useState([]);
-    const [receiversId, setReceiversId] = useState([]);
 
     useEffect(()=>{
         if(conversation){
@@ -30,7 +28,6 @@ const Conversation = ({conversation, user}) => {
 
     useEffect(() => {
         socket.current = io("ws://localhost:5001");
-        console.log("opa");
         socket.current.on("getMessage", data => {
             const aux = [...chat.messages, data.message];
             setChat({...chat, messages: aux});
@@ -68,8 +65,6 @@ const Conversation = ({conversation, user}) => {
 
                 const receiverId = chat.participants.find(member => member.user.id !== user.id);
 
-                console.log(receiverId);
-
                 socket.current.emit("sendMessage", {
                     senderId: user.id,
                     receiverId: receiverId.user.id,
@@ -84,6 +79,22 @@ const Conversation = ({conversation, user}) => {
         }
     }
 
+    function getFriendName(participants){
+        let equals = true;
+        let name = "Name";
+        let count = 0;
+        if(participants){
+            while(equals === true && count < participants.length){
+                if(participants[count].user_id != user.id){
+                    name = participants[count].user.username;
+                    equals = false;
+                }
+                count++;
+            }
+        }
+        return name
+    }
+
     return(
         <div className={styles.container}>
             <div className={styles.top}>
@@ -96,14 +107,19 @@ const Conversation = ({conversation, user}) => {
                     />
                 </div>
                 <div className={styles.friendInfo}>
-                    <div className={styles.friendData}>
-                        <span className={styles.username}>{participants || "Demontiê Alavanquê"}</span>
-                        <span className={styles.lastView}>visto por último hoje às 9:33 AM</span>
-                    </div>
-                    <div className={styles.icons}>
-                        <Search />
-                        <MoreVert />
-                    </div>
+                    {
+                        chat &&
+                        <>
+                            <div className={styles.friendData}>
+                                <span className={styles.username}>{chat.is_group ? chat.group_name : getFriendName(chat.participants)}</span>
+                                <span className={styles.lastView}>visto por último hoje às 9:33 AM</span>
+                            </div>
+                            <div className={styles.icons}>
+                                <Search />
+                                <MoreVert />
+                            </div>
+                        </>
+                    }
                 </div>
             </div>
             <div className={styles.bottom}>

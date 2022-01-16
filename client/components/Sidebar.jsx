@@ -18,6 +18,7 @@ const Sidebar = ({click, user}) => {
             const getMessages = async () => {
                 const res = await axios.get(`http://localhost:5000/api/conversationsAll/${user.id}`);
                 setConversations(res.data);
+                console.log(res.data);
             }
             getMessages();
         }

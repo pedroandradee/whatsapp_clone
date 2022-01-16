@@ -17,9 +17,9 @@ routes.delete("/api/users/:id", UserController.delete);
 
 //conversations routes
 //routes.put("/api/conversations/:id", ConversationsController.update);
-routes.get("/api/conversations/:id", ConversationsController.index);
-routes.get("/api/conversationsAll/:id", ConversationsController.indexAll);
 routes.post("/api/conversations", ConversationsController.store);
+routes.get("/api/conversations/:id", ConversationsController.index);
+routes.get("/api/conversationsAll/:id", ConversationsController.indexAll2);
 routes.delete("/api/conversations/:id", ConversationsController.delete);
 
 //messages routes

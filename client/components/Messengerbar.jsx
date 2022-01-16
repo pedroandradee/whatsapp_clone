@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "../styles/Messengerbar.module.css";
 import { Search } from "@material-ui/icons";
-import { format, render, cancel, register } from 'timeago.js';
+import { format, register } from 'timeago.js';
 
 const Messengerbar = ({click2, conversations, user}) => {
 
@@ -93,11 +93,32 @@ const Messengerbar = ({click2, conversations, user}) => {
 
     const [inputFilter, setInputFilter] = useState("");
 
+    const localeFunc = (number, index, totalSec) => {
+        // number: the timeago / timein number;
+        // index: the index of array below;
+        // totalSec: total seconds between date to be formatted and today's date;
+        return [
+            ["agora mesmo", "neste momento"],
+            ["%s segundos atras", "há %s segundos"],
+            ["1 minuto atras", "há um minuto"],
+            ["%s minutos atras", "há %s minutos"],
+            ["uma hora atras", "há uma hota"],
+            ["%s horas atras", "há %s horas"],
+            ["um dia atras", "há um dia"],
+            ["%s dias atras", "há %s dias"],
+            ["um mes atras", "há um mês"],
+            ["%s meses atras", "há %s meses"],
+            ["1 ano atras", "há 1 ano"],
+            ["%s anos atras", "há %s anos"]
+        ][index];
+      };
+
+    register('my-locale', localeFunc);
+
     useEffect(()=>{
         if(conversations.length > 0){
             setFilteredMessages(conversations);
         }
-        console.log(conversations);
     }, [conversations])
 
     const handleClick = (e) => {
@@ -139,12 +160,16 @@ const Messengerbar = ({click2, conversations, user}) => {
             }
             count++;
         }*/
-        while(equals === true && count < message.participants.length){
-            if(message.participants[count].user_id != user.id){
-                name = message.participants[count].user.username;
-                equals = false;
+        if(!message.chat.is_group){
+            while(equals === true && count < message.chat.participants.length){
+                if(message.chat.participants[count].user_id != user.id){
+                    name = message.chat.participants[count].user.username;
+                    equals = false;
+                }
+                count++;
             }
-            count++;
+        } else {
+            name = message.chat.group_name;
         }
         return name
     }
@@ -164,7 +189,7 @@ const Messengerbar = ({click2, conversations, user}) => {
             <div className={styles.wrapper}>
                 {
                     filteredMessages.map((m, index)=>(
-                        <div className={styles.message} key={m.id} onClick={(e)=>handleClick(m.id)}>
+                        <div className={styles.message} key={m.id} onClick={(e)=>handleClick(m.chat.id)}>
                             <div className={styles.messageContainer}>
                                 <div className={styles.img}>
                                     {/*<Image 
@@ -185,17 +210,17 @@ const Messengerbar = ({click2, conversations, user}) => {
                                         {/*<span className={styles.username}>{m.messages[m.messages.length - 1].own.user.username}</span>*/}
                                         <span className={styles.username}>{getFriendName(m)}</span>
                                         {
-                                            m.messages?.length > 0 &&
-                                            <span className={styles.userMessage}>{m.messages[m.messages.length - 1].text}</span>
+                                            m.chat.messages?.length > 0 &&
+                                            <span className={styles.userMessage}>{m.chat.messages[m.chat.messages.length - 1].text}</span>
                                         }
                                     </div>
                                     <div className={styles.release}>
-                                        <span className={styles.relData}>{format(m.messages[m.messages.length - 1].created_at, 'pt_BR')}</span>
+                                        <span className={styles.relData}>{format(m.chat.messages[m.chat.messages.length - 1].created_at, 'my-locale')}</span>
                                     </div>
                                 </div>
                             </div>
                             {
-                                (index < filteredMessages.length - 1) &&
+                                (index < filteredMessages?.length - 1) &&
                                 <div className={styles.hr}></div>
                             }
                         </div>
