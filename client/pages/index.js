@@ -7,7 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import Login from './Login';
 
 export default function Home() {
-  const user = useSelector(state=>state.user);
+  //const user = useSelector(state=>state.user);
+  const user = {
+    id: 1,
+    username: "Teste",
+    profile_picture: "/img/tabosa.jpg"
+  }
   return (
     <div className={styles.container}>
       <Head>

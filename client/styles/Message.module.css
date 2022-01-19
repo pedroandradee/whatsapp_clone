@@ -11,19 +11,37 @@
 .messageContainerOwn{
     background-color: #17634c;
     align-content: flex-end;
-    max-width: 300px;
 }
 
 .messageContainer, .messageContainerOwn{
     border-radius: 8px;
-    padding: 10px;
-    margin-top: 20px;
+    padding: 5px;
+    max-width: 70%;
+    margin-top: 10px;
 }
 
 .messageTop{
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+}
+
+.wrapper{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.imgContainer{
+    width: 900px;
+    height: 300px;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .usernameOwn{
@@ -35,16 +53,21 @@
 }
 
 .messageText{
+    display: block;
     min-width: 20px;
     margin-top: 0;
     color: white;
+    margin-right: 20px;
+    word-break: break-all;
 }
 
 .messageBottom{
     display: flex;
+    width: 100%;
     font-size: 12px;
     justify-content: flex-end;
     color: #a3a3a3;
+    margin-top: -15px;
 }
 
 .messageOwn{

@@ -22,28 +22,31 @@ const removeUser = (socketId) => {
 io.on("connection", (socket) => {
     
     //when connect
-    socket.on("addUser", userId => {
+    socket.on("addParticipant", userId => {
         if(userId){
-            console.log("a user connected! id: " + userId);
+            console.log("participant connected!");
             addUser(userId, socket.id);
             io.emit("getUsers", users);
         }
     })
 
     //send and get messages
-    socket.on("sendMessage", ({senderId, receiverId, message}) => {
-        const user = getUser(receiverId);
-        console.log(user);
-        if(user){
-            io.to(user.socketId).emit("getMessage", {
-                senderId, message
-            })
+    socket.on("sendMessage", ({senderId, receivers, message}) => {
+        for(let i=0;i<receivers.length;i++){
+            if(receivers[i].id !== senderId){
+                const user = getUser(receivers[i].id);
+                if(user){
+                    console.log("achou")
+                    io.to(user.socketId).emit("getMessage", {
+                        senderId, message
+                    })
+                }
+            }
         }
     });
 
     //when disconnect
     socket.on("disconnect", () => {
-        console.log("a user disconnected! id: " + socket.id);
         removeUser(socket.id)
         io.emit("getUsers", users);
     })

@@ -1,7 +1,11 @@
 import styles from "../styles/Message.module.css";
 import {format, register} from "timeago.js"
+import Image from "next/image";
 
-const Message = ({message, own}) => {
+const Message = ({message, own, user}) => {
+
+    console.log(message);
+    console.log(user);
     
     const localeFunc = (number, index, totalSec) => {
         // number: the timeago / timein number;
@@ -28,8 +32,26 @@ const Message = ({message, own}) => {
     return(
         <div className={own ? styles.messageOwn : styles.message}>
             <div className={own ? styles.messageContainerOwn : styles.messageContainer}>
-                <div className={styles.messageTop}>
+                <div 
+                    className={styles.messageTop}
+                >
                     <span className={own ? styles.usernameOwn : styles.username}>{message.own.user.username}</span>
+                    {
+                        message.img &&
+                        <div 
+                            className={styles.wrapper}
+                            style={{backgroundColor: own ? "#13503d" : "#252525"}}
+                        >
+                            <div className={styles.imgContainer}>
+                                <Image 
+                                    src="/img/tabosa.jpg" 
+                                    alt="" 
+                                    layout="fill" 
+                                    objectFit="cover"
+                                />
+                            </div>
+                        </div>
+                    }
                     <p className={styles.messageText}>{message.text}</p>
                 </div>
                 <div className={styles.messageBottom}>{format(message.created_at, 'my-locale')}</div>
