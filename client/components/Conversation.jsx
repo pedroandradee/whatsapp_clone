@@ -8,58 +8,28 @@ import axios from "axios";
 import {io} from "socket.io-client"
 import EmojiPicker from "emoji-picker-react";
 
-const Conversation = ({conversation, user}) => {
+import { useDispatch } from "react-redux";
+import { addMessage, deleteMessage } from "../redux/conversationsSlice";
+
+const Conversation = ({conversation, user, index}) => {
 
     const scrollRef = useRef();
     const [newMessage, setNewMessage] = useState("");
-    const socket = useRef();
+    //const socket = useRef();
     const [chat, setChat] = useState([]);
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            own_id: 1,
-            text: "alçsdkgçlsadghaçsdlgahçdlsghsdçlgajhdçljdhgasdçgjahdsjghasdasdasdasdasdads",
-            img: true,
-            created_at: new Date(),
-            own: {
-                id: 1,
-                user: {
-                    id: 1,
-                    username: "Nome1"
-                }
-            }
-        },
-        {
-            id: 2,
-            own_id: 2,
-            text: "testando321!",
-            img: true,
-            created_at: new Date(),
-            own: {
-                id: 2,
-                user: {
-                    id: 2,
-                    username: "Nome2"
-                }
-            }
-        },
-    ]);
+    const [messages, setMessages] = useState([]);
     const [show, setShow] = useState(false);
+
+    const dispatch = useDispatch();
 
     useEffect(()=>{
         if(conversation){
-            const getConversation = async () => {
-                const res = await axios.get(`http://localhost:5000/api/conversations/${conversation}`);
-                if(res.data.Status === "Conversa encontrada!"){
-                    setChat(res.data.conversation);
-                    setMessages(res.data.conversation.messages);
-                }
-            }
-            getConversation();
+            setChat(conversation);
+            setMessages(conversation.messages);
         }
     }, [conversation]);
 
-    useEffect(()=>{
+    /*useEffect(()=>{
         socket.current = io("ws://localhost:5001");
     }, [user]);
 
@@ -76,16 +46,16 @@ const Conversation = ({conversation, user}) => {
                 socket.current.emit("addParticipant", uid.id);
             }
         }
-    }, [chat, user, chat.participants]);
+    }, [chat, user, chat.participants]);*/
 
 
     useEffect(() =>{
         scrollRef.current?.scrollIntoView({behavior: "smooth" });
-    }, [chat.messages])
+    }, [messages])
 
     const handleSendKey = async (e) => {
-        if(e.key === "Enter"){
-            setNewMessage("");
+        if(e.keyCode === 13){
+            handleSend(e);
         }
     }
 
@@ -95,34 +65,24 @@ const Conversation = ({conversation, user}) => {
     
     const handleSend = async (e) => {
         e.preventDefault();
-        const message = {
-            conversation_id: conversation,
-            own_id: user.id,
-            text: newMessage
-        };
-
-        
-        try{
-            const res = await axios.post("http://localhost:5000/api/messages", message);
-            if(res.data.message){
-                //console.log(res.data.message);
-                const aux = {...res.data.message, own: {user: user}};
-
-                //const receiverId = chat.participants.find(member => member.user.id !== user.id);
-                const uid = chat.participants.find(p=>p.user_id === user.id);
-
-                socket.current.emit("sendMessage", {
-                    senderId: uid.id,
-                    receivers: chat.participants,
-                    message: aux,
-                });
-                //const aux2 = [...chat.messages, aux];
-                setMessages((prev)=>[...prev, aux]);
-                //setChat({...chat, messages: aux2});
+        if(newMessage !== ""){
+            const message = {
+                conversation_id: chat.id,
+                own_id: user.id,
+                text: newMessage
+            };
+            try{
+                const res = await axios.post("http://localhost:5000/api/messages", message);
+                if(res.data.message){
+                    const aux = {...res.data.message, own: {user: user}};
+                    dispatch(addMessage({ index, message: {...aux} }));
+                    setMessages((prev)=>[...prev, aux]);
+                }
+            } catch(err){
+                console.log(err)
             }
             setNewMessage("");
-        } catch(err){
-            console.log(err)
+            setShow(false);
         }
     }
 
@@ -142,8 +102,38 @@ const Conversation = ({conversation, user}) => {
         return name
     }
 
+    function getImage(){
+        let equals = true;
+        let image = "a";
+        let count = 0;
+        if(!chat.is_group){
+            while(equals === true && count < chat?.participants?.length){
+                if(chat.participants[count].user_id != user.id){
+                    image = chat.participants[count].user.profile_picture;
+                    equals = false;
+                }
+                count++;
+            }
+        } else {
+            image = chat.group_image;
+        }
+        return image;
+    }
+
     const handleEmojiClick = (e, emojiObject) => {
         setNewMessage(newMessage + emojiObject.emoji);
+    }
+
+    async function deleteMsg(indexMessage, id){
+        console.log("deletando");
+        try{
+            const res = await axios.delete(`http://localhost:5000/api/messages/${id}`);
+            if(res.data.Status === "Mensagem apagada"){
+                dispatch(deleteMessage({ index, indexMessage }));
+            }
+        } catch(err){
+            console.log(err);
+        }
     }
 
     return(
@@ -151,7 +141,7 @@ const Conversation = ({conversation, user}) => {
             <div className={styles.top}>
                 <div className={styles.imgContainer}>
                     <Image 
-                        src="/img/tabosa.jpg" 
+                        src={"/img/" + getImage()} 
                         alt="" 
                         layout="fill" 
                         objectFit="cover"
@@ -176,9 +166,18 @@ const Conversation = ({conversation, user}) => {
             <div className={styles.bottom}>
                 <div className={styles.chatWrapper}>
                     <div className={styles.chatTop}>
-                        {messages?.map(m=>(
-                            <div key={m.id} ref={scrollRef}>
-                                {<Message message={m} own={m.own_id === user?.id} user={user} />}
+                        {messages?.map((m, indexM)=>(
+                            <div key={indexM} ref={scrollRef}>
+                                {
+                                    <Message 
+                                        message={m} 
+                                        own={m.own_id === user?.id} 
+                                        user={user} 
+                                        indexConversa={index}
+                                        indexMessage={indexM} 
+                                        deleteMsg={deleteMsg}
+                                    />
+                                }
                             </div>
                         ))}
                     </div>
@@ -222,7 +221,7 @@ const Conversation = ({conversation, user}) => {
                                 className={styles.chatInput}
                                 placeholder="Digite uma mensagem"
                                 onChange={(e)=>setNewMessage(e.target.value)}
-                                onKeyPressCapture={(e)=>handleSendKey(e)}
+                                onKeyUp={handleSendKey}
                                 value={newMessage}
                             />
                         </div>

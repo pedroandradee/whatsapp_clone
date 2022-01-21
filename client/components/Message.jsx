@@ -1,11 +1,18 @@
 import styles from "../styles/Message.module.css";
 import {format, register} from "timeago.js"
 import Image from "next/image";
+import { ClearRounded, KeyboardArrowDownRounded } from "@material-ui/icons";
+import { useState } from "react";
 
-const Message = ({message, own, user}) => {
+import { useDispatch } from "react-redux";
+import { deleteMessage } from "../redux/conversationsSlice";
+import axios from "axios";
+import { useEffect } from "react";
 
-    console.log(message);
-    console.log(user);
+const Message = ({message, own, user, deleteMsg, indexMessage}) => {
+
+    const [show, setShow] = useState(false);
+    const dispatch = useDispatch();
     
     const localeFunc = (number, index, totalSec) => {
         // number: the timeago / timein number;
@@ -29,15 +36,48 @@ const Message = ({message, own, user}) => {
 
     register('my-locale', localeFunc);
 
+    const handleDelete = async () => {
+        console.log("deletando");
+        try{
+            const res = await axios.delete(`http://localhost:5000/api/messages/${message.id}`);
+            console.log(res.data);
+            if(res.data.Status === "Mensagem apagada"){
+                dispatch(deleteMessage({ index: indexConversa, indexMessage }));
+            }
+        } catch(err){
+            console.log(err);
+        }
+    }
+
     return(
-        <div className={own ? styles.messageOwn : styles.message}>
+        <div className={own ? styles.messageOwn : styles.message} on>
             <div className={own ? styles.messageContainerOwn : styles.messageContainer}>
+                
                 <div 
                     className={styles.messageTop}
                 >
-                    <span className={own ? styles.usernameOwn : styles.username}>{message.own.user.username}</span>
+                    <div className={styles.top}>
+                        <span className={own ? styles.usernameOwn : styles.username}>{message?.own?.user?.username}</span>
+                        {
+                            show &&
+                            <div className={styles.menu}>
+                                <div className={styles.iconShow} onClick={()=>setShow(!show)}>
+                                    <KeyboardArrowDownRounded />
+                                </div>
+                                {
+                                    show &&
+                                    <div className={styles.options}>
+                                        <div className={styles.option} onClick={()=>deleteMsg(indexMessage, message.id)}>
+                                            <ClearRounded />
+                                            <span>Deletar</span>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                     {
-                        message.img &&
+                        message?.img &&
                         <div 
                             className={styles.wrapper}
                             style={{backgroundColor: own ? "#13503d" : "#252525"}}
@@ -52,9 +92,9 @@ const Message = ({message, own, user}) => {
                             </div>
                         </div>
                     }
-                    <p className={styles.messageText}>{message.text}</p>
+                    <p className={styles.messageText}>{message?.text}</p>
                 </div>
-                <div className={styles.messageBottom}>{format(message.created_at, 'my-locale')}</div>
+                <div className={styles.messageBottom}>{format(message?.created_at, 'my-locale')}</div>
             </div>
         </div>
     );

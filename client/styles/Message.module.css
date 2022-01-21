@@ -20,8 +20,36 @@
     margin-top: 10px;
 }
 
+.top{
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu{
+    position: relative;
+}
+
+.iconShow{
+    color: #FFF
+}
+
+.options{
+    position: absolute;
+    right: 5px;
+    top: 20px;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #dbdbdb;
+}
+
+.option{
+    display: flex;
+    cursor: pointer;
+}
+
 .messageTop{
     display: flex;
+    min-width: 70px;
     flex-direction: column;
     justify-content: flex-end;
 }

@@ -1,6 +1,24 @@
+const { Op } = require("sequelize");
 const User = require("../models/User");
-
 module.exports = {
+    //get
+    async indexAll(req, res){
+        try{
+            const users = await User.findAll({
+                where: { 
+                    id: {
+                        [Op.ne]: req.params.id
+                    } 
+                },
+                attributes: ['id', 'username', 'profile_picture']
+            });
+            return res.status(200).json(users);
+        }catch(err){
+            return res.status(200).json({
+                Status: "Erro interno, " + err
+            })
+        }
+    },
     //update
     async update(req, res){
         try{

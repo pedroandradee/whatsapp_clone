@@ -12,6 +12,7 @@ routes.post("/api/users", AuthController.store);
 routes.post("/api/users/login", AuthController.login);
 
 //user routes
+routes.get("/api/users/:id", UserController.indexAll);
 routes.put("/api/users/:id", UserController.update);
 routes.delete("/api/users/:id", UserController.delete);
 
@@ -24,5 +25,6 @@ routes.delete("/api/conversations/:id", ConversationsController.delete);
 
 //messages routes
 routes.post("/api/messages", MessagesController.store);
+routes.delete("/api/messages/:id", MessagesController.delete);
 
 module.exports = routes;

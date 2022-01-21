@@ -123,13 +123,21 @@ module.exports = {
                                 attributes: ['id', 'user_id', 'conversation_id', 'is_admin'],
                                 include: {
                                     association: 'user',
-                                    attributes: ['id', 'username']
+                                    attributes: ['id', 'username', 'profile_picture']
                                 }
                             },
                             {
                                 association: 'messages',
                                 attributes: ['id', 'own_id', 'text', 'created_at'],
-                                order: ['id', 'DESC']
+                                order: ['id', 'DESC'],
+                                include: {
+                                    association: 'own',
+                                    attributes: ['id', 'user_id', 'is_admin'],
+                                    include: {
+                                        association: 'user',
+                                        attributes: ['id', 'username']
+                                    }
+                                }
                             }
                         ],
                         attributes: ['id', 'own_id', 'is_group', 'group_name', 'description', 'group_image']

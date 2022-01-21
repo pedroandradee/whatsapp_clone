@@ -1,44 +1,110 @@
-.users{
+.container{
     display: flex;
+    position: absolute;
     width: 100%;
-    height: calc(100% - 110px);
+    height: 100%;
+    left: 0;
+    top: 0;
+    bottom: 0;
     flex-direction: column;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
+    transition: all 0.4s ease;
+    background-color: #1a1a1a;
+    z-index: 10;
 }
 
-.users::-webkit-scrollbar{
+.head{
+    display: flex;
+    align-items: center;
+    padding: 60px 15px 15px 15px;
+    background-color: #2b2b2b;
+}
+
+.back{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    margin-right: 20px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.title{
+    font-size: 19px;
+    height: 40px;
+    line-height: 40px;
+    flex: 1;
+    font-weight: 500;
+    color: white;
+}
+
+.search{
+    border-bottom: 1px solid #363636;
+    padding: 5px 15px;
+}
+
+.totalAreaInput{
+    display: flex;
+    height: 40px;
+    border-radius: 20px;
+    align-items: center;
+    padding: 0 10px;
+    background-color: #383838;
+}
+
+.totalAreaInput input{
+    flex: 1;
+    border: 0;
+    outline: none;
+    background-color: inherit;
+    margin-left: 10px;
+    color: white;
+}
+
+.friendList{
+    flex: 1;
+    overflow-y: auto;
+}
+
+.friendList::-webkit-scrollbar{
     width: 6px;
     height: 6px;
 }
 
-.users::-webkit-scrollbar-thumb{
+.friendList::-webkit-scrollbar-thumb{
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.newGroup{
+.friendContainer{
     display: flex;
-    width: 100%;
-    height: 70px;
     align-items: center;
-    margin: 5px 0px;
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #363636;
 }
 
-.span{
-    display: flex;
-    flex: 1;
-    height: 100%;
-    align-items: center;
-    border-bottom: 1px solid #363636;
-    color: white;
+.friendContainer:hover{
+    background-color: #272727;
 }
 
 .userImage{
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 15px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
 }
+
+.friendName{
+    display: flex;
+    width: calc(100% - 65px);
+    height: 100%;
+    align-items: center;
+    font-size: 17px;
+    color: white;
+}
+
