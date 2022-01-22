@@ -33,12 +33,11 @@ io.on("connection", (socket) => {
     //send and get messages
     socket.on("sendMessage", ({senderId, receivers, message}) => {
         for(let i=0;i<receivers.length;i++){
-            if(receivers[i].id !== senderId){
-                const user = getUser(receivers[i].id);
+            if(receivers[i].user_id !== senderId){
+                const user = getUser(receivers[i].user_id);
                 if(user){
-                    console.log("achou")
                     io.to(user.socketId).emit("getMessage", {
-                        senderId, message
+                        conversation_id: receivers[i].conversation_id, message
                     })
                 }
             }

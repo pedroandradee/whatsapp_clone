@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import Image from "next/image";
 import styles from "../styles/Homepage.module.css";
 import { useState } from "react";
@@ -13,18 +14,33 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addConversations, addConversation, addMessage, deleteMessage } from "../redux/conversationsSlice";
 
+import {io} from "socket.io-client"
+
 const Homepage = ({user}) => {
     //const [chatList, setChatList] = useState([]);
     const [currentChat, setCurrentChat] = useState({});
     const [newChat, setNewChat] = useState(false);
     const [friends, setFriends] = useState([]);
     const [index, setIndex] = useState(-1);
+    const [arrivalMessage, setArrivalMessage] = useState({});
+    const socket = useRef();
 
     const dispatch = useDispatch();
     const chatList = useSelector(state=>state.conversations);
 
+    useEffect(() => {
+        socket.current = io("ws://localhost:5001");
+        socket.current.on("getMessage", data => {
+            setArrivalMessage({
+                conversation_id: data.conversation_id,
+                message: data.message,
+            })
+        })
+    }, []);
+
     useEffect(()=>{
         if(user){
+            socket.current.emit("addParticipant", user.id);
             const getConversations = async () => {
                 try{
                     const res = await axios.get(`http://localhost:5000/api/conversationsAll/${user.id}`);
@@ -36,12 +52,20 @@ const Homepage = ({user}) => {
         }
     }, [user]);
 
-    function alterar(index, msg){
-        let aux = chatList;
-        setChatList([]);
-        aux[index].chat.messages.push(msg);
-        setChatList(aux);
-    }
+    useEffect(() => {
+        if(arrivalMessage.conversation_id){
+            let count = 0;
+            let found = false;
+            while(count < chatList.userChats.length && found === false){
+                if(chatList.userChats[count].chat.id === arrivalMessage.conversation_id){
+                    found = true;
+                    dispatch(addMessage({ index: count, message: arrivalMessage.message}));
+                } else {
+                    count++;
+                }
+            }
+        }
+    }, [arrivalMessage])
 
     const setActiveIndex = (e) => {
         if(e !== index){
@@ -117,6 +141,7 @@ const Homepage = ({user}) => {
                         user={user} 
                         conversation={currentChat} 
                         index={index}
+                        socket={socket}
                     /> :
                     <Content />
                 }

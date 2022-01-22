@@ -6,12 +6,12 @@ import { AttachFile, InsertEmoticon, Mic, MoreVert, Search, Send, Gif, Close } f
 import { useRef } from "react";
 import axios from "axios";
 import {io} from "socket.io-client"
-import EmojiPicker from "emoji-picker-react";
+//import EmojiPicker from "emoji-picker-react";
 
 import { useDispatch } from "react-redux";
 import { addMessage, deleteMessage } from "../redux/conversationsSlice";
 
-const Conversation = ({conversation, user, index}) => {
+const Conversation = ({conversation, user, index, socket}) => {
 
     const scrollRef = useRef();
     const [newMessage, setNewMessage] = useState("");
@@ -77,6 +77,11 @@ const Conversation = ({conversation, user, index}) => {
                     const aux = {...res.data.message, own: {user: user}};
                     dispatch(addMessage({ index, message: {...aux} }));
                     setMessages((prev)=>[...prev, aux]);
+                    socket?.current.emit("sendMessage", {
+                        senderId: user.id,
+                        receivers: conversation.participants,
+                        message: aux
+                    })
                 }
             } catch(err){
                 console.log(err)
@@ -85,6 +90,15 @@ const Conversation = ({conversation, user, index}) => {
             setShow(false);
         }
     }
+
+    useEffect(()=>{
+        socket.current = io("ws://localhost:5001");
+        socket.current.on("getMessage", data => {
+            if(data.conversation_id === conversation.id){
+                setMessages((prev)=>[...prev, data.message]);
+            }
+        });
+    }, []);
 
     function getFriendName(participants){
         let equals = true;
@@ -185,11 +199,11 @@ const Conversation = ({conversation, user, index}) => {
                         className={styles.emojisContainer} 
                         style={{height: show ? '200px' : '0px'}}
                     >
-                        <EmojiPicker
+                        {/*<EmojiPicker
                             onEmojiClick={handleEmojiClick}
                             disableSearchBar
                             disableSkinTonePicker
-                        />
+                        />*/}
                     </div>
                     <div className={styles.chatBottom}>
                         <div 
